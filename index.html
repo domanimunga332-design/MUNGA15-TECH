@@ -24,7 +24,79 @@ a{text-decoration:none}.wrap{max-width:780px;margin:0 auto;padding:16px}
 <div class="tabs"><a href="#top" class="active">🏠 HOME</a><a href="#services">💻 SERVICES</a><a href="shop.html">👕 SHOP</a><a href="#classes">🎓 CLASSES</a><a href="#bot247">🟢 24/7 BOT</a></div>
 <div class="hero" id="top"><div class="top-bar"><span>🔥 KENYA • EST. 2026 🔥</span><b>THE15SQUAD</b></div><div class="logo-munga">🔥 MUNGA 🔥</div><div class="logo-15">15<small>★ S ★ DEVELOPER • KENYA ★</small></div><div class="logo-line"></div><p>I build <b>WhatsApp Bots, Websites, Apps & Brands</b> — and I teach you how to code too.</p><div class="badge">🔥 🟢 24/7 BOT — ONLY KSh 50 TODAY! 🔥</div></div>
 <div class="sector s-brand"><h2>MY BRAND • PROOF OF WORK</h2><h3>👕 The15Squad — I Built This From Zero</h3><div class="shop-grid"><div class="shop-item"><img src="https://images.unsplash.com/photo-1588850561407-ed78c282e89b?w=400&q=80"><b>Toppers</b><span>THE15SQUAD</span></div><div class="shop-item"><img src="https://images.unsplash.com/photo-1521223890158-f9f7c3d5d504?w=400&q=80"><b>Ski Masks</b><span>GOONS FAMILY</span></div><div class="shop-item"><img src="https://images.unsplash.com/photo-1601924994987-69e26d50dc26?w=400&q=80"><b>Gloves</b><span>LINESMAN</span></div><div class="shop-item"><img src="https://images.unsplash.com/photo-1556821840-3a63f95609a7?w=400&q=80"><b>Hoodies</b><span>THE15SQUAD</span></div><div class="shop-item"><img src="https://images.unsplash.com/photo-1601924994987-69e26d50dc26?w=400&q=80"><b>Bandanas</b><span>GOONS FAMILY</span></div><div class="shop-item"><img src="https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=400&q=80"><b>+ More Drops</b><span>COMING SOON</span></div></div><a class="view-shop" href="shop.html">👀 VIEW THE SHOP WEBSITE →</a><a class="view-shop2" href="https://x.com/goonfifteen">See Drops on X @goonfifteen →</a></div>
-<div class="sector s-work" id="services"><h2>ALL 18 SERVICES + PRICES 🔥</h2><h3>Pick & Order — Photo + Price + 1 Click</h3>
+<!-- 💰 MUNGA WALLET - SERVICE 1 -->
+<div style="background:linear-gradient(135deg,#111,#7b00ff,#ff00ea);padding:20px;border-radius:18px;margin:15px 10px;color:#fff;border:3px solid #ffea00">
+<div style="text-align:center;background:#ffea00;color:#000;display:inline-block;padding:4px 12px;border-radius:20px;font-weight:900;font-size:12px">⭐ SERVICE #1 - MOST POPULAR</div>
+<h2 style="text-align:center;margin-top:10px">💰 MUNGA WALLET</h2>
+<p style="text-align:center;font-size:13px">Deposit Once, Buy Anytime. No PIN Every Time.</p>
+
+<div id="walletOut">
+<input id="wPhone" placeholder="Phone: 0798512453" style="width:100%;padding:14px;border-radius:12px;border:2px solid #fff;margin-top:10px;color:#000;font-weight:700">
+<input id="wName" placeholder="Your Name" style="width:100%;padding:14px;border-radius:12px;border:2px solid #fff;margin-top:8px;color:#000;font-weight:700">
+<button onclick="loginWallet()" style="width:100%;padding:14px;background:#ffea00;color:#000;border-radius:12px;font-weight:900;margin-top:10px">LOGIN / CREATE WALLET →</button>
+</div>
+
+<div id="walletIn" style="display:none">
+<div style="background:#fff;color:#000;border-radius:14px;padding:16px;text-align:center;margin-top:10px">
+<div style="font-size:12px">YOUR BALANCE</div>
+<div id="wBalance" style="font-size:36px;font-weight:900;color:#7b00ff">KSh 0</div>
+<div id="wUser" style="font-size:12px;font-weight:700"></div>
+</div>
+<label style="display:block;font-weight:900;margin-top:12px;font-size:13px">DEPOSIT TO WALLET:</label>
+<div style="display:flex;gap:8px;margin-top:6px">
+<input id="depositAmt" type="number" placeholder="Amount e.g. 500" style="flex:1;padding:14px;border-radius:12px;border:2px solid #fff;color:#000;font-weight:800">
+<button onclick="depositWallet()" style="padding:14px 18px;background:#25D366;color:#fff;border-radius:12px;font-weight:900">DEPOSIT</button>
+</div>
+<p id="depositMsg" style="font-size:12px;margin-top:6px;font-weight:700"></p>
+<button onclick="payWithWallet()" style="width:100%;padding:14px;background:#00ff5e;color:#000;border-radius:12px;font-weight:900;margin-top:12px">🛒 PAY WITH WALLET</button>
+<div id="wHistory" style="background:#fff;color:#000;border-radius:12px;padding:10px;font-size:12px;margin-top:10px">No transactions yet.</div>
+<button onclick="logoutWallet()" style="width:100%;padding:10px;background:transparent;color:#fff;border:2px solid #fff;border-radius:12px;margin-top:10px">Logout</button>
+</div>
+</div>
+
+<script>
+let curUser=null;
+function getBal(){return parseInt(localStorage.getItem('munga_bal_'+curUser.phone)||'0')}
+function saveBal(b){localStorage.setItem('munga_bal_'+curUser.phone,b)}
+function showWallet(){
+document.getElementById('wBalance').innerText='KSh '+getBal().toLocaleString();
+document.getElementById('wUser').innerText=curUser.name+' • '+curUser.phone;
+let h=JSON.parse(localStorage.getItem('munga_hist_'+curUser.phone)||'[]');
+document.getElementById('wHistory').innerHTML=h.length?h.slice(-5).reverse().join('<br>'):'No transactions yet.';
+}
+function loginWallet(){
+let phone=document.getElementById('wPhone').value.trim();
+let name=document.getElementById('wName').value.trim();
+if(!phone||!name) return alert('Enter phone and name');
+curUser={phone,name};localStorage.setItem('munga_user',JSON.stringify(curUser));
+document.getElementById('walletOut').style.display='none';
+document.getElementById('walletIn').style.display='block';showWallet();
+}
+function depositWallet(){
+let amt=parseInt(document.getElementById('depositAmt').value);
+if(!amt||amt<10) return alert('Enter amount 10+');
+document.getElementById('depositMsg').innerText='Send KSh '+amt+' to 0798512453 (M-PESA) then send screenshot on WhatsApp.';
+let newBal=getBal()+amt;saveBal(newBal);
+let h=JSON.parse(localStorage.getItem('munga_hist_'+curUser.phone)||'[]');
+h.push('DEPOSIT +'+amt+' — Bal: '+newBal);localStorage.setItem('munga_hist_'+curUser.phone,JSON.stringify(h));
+showWallet();document.getElementById('depositMsg').innerText='✅ Deposited! New Balance: KSh '+newBal;
+}
+function payWithWallet(){
+let svc=document.getElementById('svc');
+if(!svc) return alert('Select a service first');
+let v=svc.value.split('|');let price=parseInt(v[0]);let sname=v[1];
+if(getBal()<price) return alert('Not enough balance. Deposit KSh '+price+' first.');
+let newBal=getBal()-price;saveBal(newBal);
+let h=JSON.parse(localStorage.getItem('munga_hist_'+curUser.phone)||'[]');
+h.push('BOUGHT '+sname+' -'+price+' — Bal: '+newBal);localStorage.setItem('munga_hist_'+curUser.phone,JSON.stringify(h));
+showWallet();
+let msg='Hello Munga! I paid with WALLET. Service: '+sname+' Price: KSh '+price+' Name: '+curUser.name+' Phone: '+curUser.phone+' Balance left: '+newBal;
+window.open('https://wa.me/254798512453?text='+encodeURIComponent(msg),'_blank');
+}
+function logoutWallet(){localStorage.removeItem('munga_user');location.reload()}
+let saved=localStorage.getItem('munga_user');
+if(saved){curUser=JSON.parse(saved);document.getElementById('walletOut').style.display='none';document.getElementById('walletIn').style.display='block';showWallet();}
+</script> <div class="sector s-work" id="services"><h2>ALL 18 SERVICES + PRICES 🔥</h2><h3>Pick & Order — Photo + Price + 1 Click</h3>
 <h3 style="margin-top:18px">A. WEBSITES & APPS 💻</h3>
 <!-- 1 -->
 <div class="project"><img class="project-img" src="https://images.unsplash.com/photo-1467232004584-a241de8bcf5d?w=800&q=80"><div class="project-body"><div class="project-icon">👤</div><h4>1. Portfolio Website</h4><p>Personal website like this one.</p><div class="price-row"><div class="price-tag">KSh 7,000<small>24h Delivery</small></div><a class="order-btn" href="https://wa.me/254798512453?text=Hi%20Munga,%20I%20want%20Portfolio%20(KSh%207,000)">Order →</a></div></div></div>
